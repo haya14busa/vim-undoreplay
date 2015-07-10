@@ -41,7 +41,7 @@ function! s:replay_entries(entries, t, ...) abort
       break
     endif
     call s:undo(seq)
-    echo s:build_progressbar(idx, len)
+    echo s:build_progressbar(idx, len, entry.time)
     redraw
     call s:sleep(t, rt)
     let rt = reltime()
@@ -49,12 +49,13 @@ function! s:replay_entries(entries, t, ...) abort
   endwhile
 endfunction
 
-function! s:build_progressbar(idx, len) abort
+function! s:build_progressbar(idx, len, time) abort
   let persent = str2float(a:idx) / str2float(a:len)
-  let width = max([0, &columns - 10])
+  let timestr = strftime('%Y %b %d %X', a:time)
+  let width = max([0, &columns - (10 + strdisplaywidth(timestr))])
   let progress = float2nr(persent * width)
   let rest = width - progress
-  return printf('%3d%% [%s%s]', float2nr(persent * 100), repeat('#', progress), repeat(' ', rest))
+  return printf('%s, %3d%% [%s%s]', timestr, float2nr(persent * 100), repeat('#', progress), repeat(' ', rest))
 endfunction
 
 function! s:flatten_entries(entries) abort
