@@ -63,9 +63,8 @@ function! s:flatten_entries(entries) abort
   for entry in a:entries
     if has_key(entry, 'alt')
       let es += s:flatten_entries(entry.alt)
-    else
-      let es += [entry]
     endif
+    let es += [entry]
   endfor
   return es
 endfunction
