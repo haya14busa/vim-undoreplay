@@ -24,11 +24,11 @@ Plug 'haya14busa/vim-undoreplay'
 
 #### Keymappings
 
-| Keymap    | Details             |
-| --------- | ------------------- |
-| `<Up>`    | Speed up            |
-| `<Down>`  | Speed down          |
-| `<Space>` | stop/restart replay |
-| `<Right>` | next step           |
-| `<Left>`  | previous step       |
-| `?`       | show help           |
+| Keymap           | Details             |
+| ---------------- | ------------------- |
+| `<Up>` or `k`    | Speed up            |
+| `<Down>` or `j`  | Speed down          |
+| `<Space>`        | stop/restart replay |
+| `<Right>` or `l` | next step           |
+| `<Left>` or `h`  | previous step       |
+| `?`              | show help           |

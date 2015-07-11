@@ -39,14 +39,14 @@ function! s:replay_entries(entries, t, ...) abort
     let entry = a:entries[idx]
     let seq = entry.seq
     let chr = getchar(0)
-    if s:is_char(chr, "\<Down>")
+    if s:is_char(chr, "\<Down>") || s:is_char(chr, 'j')
       let t += 50
-    elseif s:is_char(chr, "\<Up>")
+    elseif s:is_char(chr, "\<Up>") || s:is_char(chr, 'k')
       let t = max([1, t - 50])
-    elseif s:is_char(chr, "\<Left>")
+    elseif s:is_char(chr, "\<Left>") || s:is_char(chr, 'h')
       let idx = max([0, idx - 1])
       let is_stop = 1
-    elseif s:is_char(chr, "\<Right>")
+    elseif s:is_char(chr, "\<Right>") || s:is_char(chr, 'l')
       let idx = min([len - 1, idx + 1])
       let is_stop = 1
     elseif s:is_char(chr, "\<Space>")
@@ -110,14 +110,14 @@ function! s:usage() abort
   return join([
   \   ' HELP',
   \   ' ====',
-  \   ' | Keymap  | Details             | ',
-  \   ' | ------- | ------------------- | ',
-  \   ' | <Up>    | Speed up            | ',
-  \   ' | <Down>  | Speed down          | ',
-  \   ' | <Space> | stop/restart replay | ',
-  \   ' | <Right> | next step           | ',
-  \   ' | <Left>  | previous step       | ',
-  \   ' | ?       | show help           | '
+  \   ' | Keymap       | Details             | ',
+  \   ' | ------------ | ------------------- | ',
+  \   ' | <Up> or k    | Speed up            | ',
+  \   ' | <Down> or j  | Speed down          | ',
+  \   ' | <Space>      | stop/restart replay | ',
+  \   ' | <Right> or l | next step           | ',
+  \   ' | <Left> or h  | previous step       | ',
+  \   ' | ?            | show help           | '
   \ ], "\n")
 endfunction
 
