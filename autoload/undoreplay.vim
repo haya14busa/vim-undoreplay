@@ -34,6 +34,7 @@ function! s:replay_entries(entries, t, ...) abort
   let t = a:t
   let len = len(a:entries)
   let idx = 0
+  let is_stop = 0
   while idx < len
     let entry = a:entries[idx]
     let seq = entry.seq
@@ -42,16 +43,32 @@ function! s:replay_entries(entries, t, ...) abort
       let t += 50
     elseif s:is_char(chr, "\<Up>")
       let t = max([1, t - 50])
+    elseif s:is_char(chr, "\<Left>")
+      let idx = max([0, idx - 1])
+      let is_stop = 1
+    elseif s:is_char(chr, "\<Right>")
+      let idx = min([len - 1, idx + 1])
+      let is_stop = 1
+    elseif s:is_char(chr, "\<Space>")
+      let is_stop = 1 - is_stop
+    elseif s:is_char(chr, '?')
+      call s:show_usage()
     elseif chr
       break
     endif
-    call s:undo(seq)
-    echo s:build_progressbar(idx, len, entry.time)
-    redraw
-    call s:sleep(t, rt)
-    let rt = reltime()
-    let idx += 1
+    call s:update(seq, idx, len, entry.time)
+    if !is_stop
+      call s:sleep(t, rt)
+      let rt = reltime()
+      let idx += 1
+    endif
   endwhile
+endfunction
+
+function! s:update(seq, idx, len, time) abort
+  call s:undo(a:seq)
+  echo s:build_progressbar(a:idx, a:len, a:time)
+  redraw
 endfunction
 
 function! s:build_progressbar(idx, len, time) abort
@@ -87,6 +104,27 @@ endfunction
 
 function! s:undo(seq) abort
   silent execute ':undo' a:seq
+endfunction
+
+function! s:usage() abort
+  return join([
+  \   ' HELP',
+  \   ' ====',
+  \   ' | Keymap  | Details             | ',
+  \   ' | ------- | ------------------- | ',
+  \   ' | <Up>    | Speed up            | ',
+  \   ' | <Down>  | Speed down          | ',
+  \   ' | <Space> | stop/restart replay | ',
+  \   ' | <Right> | next step           | ',
+  \   ' | <Left>  | previous step       | ',
+  \   ' | ?       | show help           | '
+  \ ], "\n")
+endfunction
+
+function! s:show_usage() abort
+  echo s:usage()
+  while !getchar(0)
+  endwhile
 endfunction
 
 let &cpo = s:save_cpo
