@@ -16,10 +16,15 @@ function! s:replay(undotree, interval) abort
     echo 'No undotree'
     return
   endif
+  let orig_view = winsaveview()
+  let scrolloff_save = &scrolloff
+  let &scrolloff = max([10, &scrolloff])
   try
     call s:replay_entries(s:flatten_entries(a:undotree.entries), a:interval)
   finally
+    let &scrolloff = scrolloff_save
     call s:undo(a:undotree.seq_cur)
+    call winrestview(orig_view)
     echo ''
   endtry
 endfunction
