@@ -16,11 +16,12 @@ function! s:replay(undotree, interval) abort
     echo 'No undotree'
     return
   endif
+  let entries = sort(s:flatten_entries(a:undotree.entries), function('s:sort_entry_func'))
   let orig_view = winsaveview()
   let scrolloff_save = &scrolloff
   let &scrolloff = max([10, &scrolloff])
   try
-    call s:replay_entries(s:flatten_entries(a:undotree.entries), a:interval)
+    call s:replay_entries(entries, a:interval)
   finally
     let &scrolloff = scrolloff_save
     call s:undo(a:undotree.seq_cur)
@@ -125,6 +126,11 @@ function! s:show_usage() abort
   echo s:usage()
   while !getchar(0)
   endwhile
+endfunction
+
+function! s:sort_entry_func(ex, ey) abort
+  let [x, y] = [a:ex.time, a:ey.time]
+  return x is# y ? 0 : x ># y ? 1 : -1
 endfunction
 
 let &cpo = s:save_cpo
